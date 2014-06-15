@@ -83,10 +83,10 @@ public enum AppConfig {
         cmd = parser.parse(getOptions(), args);
 
         // Throw exception for required options
-        if(!cmd.hasOption("i") || cmd.getOptionValue("i") == null || cmd.getOptionValue("i").isEmpty()) throw new ParseException("'-i','--inputFile' is required.");
+        if(!cmd.hasOption("i") || cmd.getOptionValue("i").isEmpty()) throw new ParseException("'-i','--inputFile' is required.");
         
         this.hostname = cmd.hasOption("h") ? cmd.getOptionValue("h") : "localhost";
-        this.port = cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : 5555;
+        this.port = cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : AppServer.DEFAULT_PORT;
         this.stateless = cmd.hasOption("s");
         this.inputFile = cmd.getOptionValue("i");
         

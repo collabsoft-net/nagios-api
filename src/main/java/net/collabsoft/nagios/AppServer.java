@@ -14,8 +14,10 @@ import org.reflections.util.ConfigurationBuilder;
 
 public class AppServer {
 
+    public static final int DEFAULT_PORT = 8081;
+    
     private String hostname = "localhost";
-    private int port = 5555;
+    private int port = DEFAULT_PORT;
     private Closeable server;
     
     // ----------------------------------------------------------------------------------------------- Constructor

@@ -1,0 +1,9 @@
+usage: nagios-api -i "path to status.dat" [options]
+                  
+ -h,--host <arg>    Binds the Nagios API server to the given hostname or
+                    IP address
+ -i,--input <arg>   Path to Nagios 'status.dat' file (Nagios version 3 or
+                    later)
+ -p,--port <arg>    Binds the Nagios API server to the given TCP port
+ -s,--stateless     Disables caching of Nagios status information.
+                    Caution: can cause performance issues!
