@@ -76,10 +76,8 @@ public class NagiosParser {
                     properties += line + System.lineSeparator();
                 }
             } else {
-                if(line.endsWith("{")) {
-                    name = line.substring(0, line.length() - 1);
-                    inClosure = true;
-                }
+                name = line.substring(0, line.length() - 1);
+                inClosure = true;
             }
         }
         
@@ -119,10 +117,6 @@ public class NagiosParser {
         String[] lines = content.split(System.lineSeparator());
         for(String line : lines) {
             line = line.trim();
-
-            // Ignore empty lines and comments
-            if(line.isEmpty() || line.startsWith("#"))
-                continue;
 
             if(line.contains("=")) {
                 String key = line.substring(0, line.indexOf("="));
