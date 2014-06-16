@@ -95,7 +95,7 @@ public class StatusObjects {
         this.services = Maps.newHashMap();
     }
     
-    public void add(StatusObject statusObj) {
+    public void add(StatusObject statusObj) throws UnsupportedOperationException {
         
         switch(statusObj.getType()) {
             case HOST:
@@ -116,9 +116,9 @@ public class StatusObjects {
                 this.programstatus = statusObj;
                 break;
             case CONTACT:
-                break;
             case COMMENT:
-                break;
+            default:
+                throw new UnsupportedOperationException(String.format("The provided status object type (%s) is currently not supported", statusObj.getType()));
         }
         
     }
