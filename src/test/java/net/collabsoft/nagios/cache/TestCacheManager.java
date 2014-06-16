@@ -30,12 +30,12 @@ public class TestCacheManager extends MockObjectTestCase {
     
     @Test
     public void testConstructor() {
-        assertNotNull(CacheManager.getInstance());
+        assertNotNull(CacheManagerImpl.getInstance());
     }
 
     @Test
     public void testProperties() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         assertEquals(DEFAULT_REFRESH_INTERVAL, cm.getRefreshInterval());
         assertEquals(DEFAULT_REFRESH_INTERVAL_UNIT, cm.getRefreshIntervalUnit());
         
@@ -51,7 +51,7 @@ public class TestCacheManager extends MockObjectTestCase {
     
     @Test
     public void testCache() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         assertNotNull(cm.getCache());
         assertNotNull(cm.getCache());
         cm.clear();
@@ -64,7 +64,7 @@ public class TestCacheManager extends MockObjectTestCase {
     
     @Test
     public void testCacheEntries() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         
         TestCacheEntry cacheEntry = new TestCacheEntry();
         cacheEntry.setSomeValue(TEST_CACHE_ENTRY_VALUE);
@@ -103,7 +103,7 @@ public class TestCacheManager extends MockObjectTestCase {
     
     @Test
     public void testRefresh() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         
         TestCacheEntry cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
         assertNotNull(cacheEntry);

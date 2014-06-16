@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.collabsoft.nagios.AppConfig;
 import net.collabsoft.nagios.cache.CacheManager;
+import net.collabsoft.nagios.cache.CacheManagerImpl;
 import net.collabsoft.nagios.objects.StatusObjects;
 import net.collabsoft.nagios.parser.NagiosParser;
 
@@ -36,7 +37,7 @@ public class Nagios {
     @Produces (MediaType.APPLICATION_JSON) 
     @Path ("/info") 
     public Response getInfo() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManager cm = CacheManagerImpl.getInstance();
         StatusObjects status = (StatusObjects)cm.getEntry(NagiosParser.CACHEKEY);
         if(status == null) {
             return Response.serverError().build();
@@ -54,7 +55,7 @@ public class Nagios {
     @Produces (MediaType.APPLICATION_JSON) 
     @Path ("/program") 
     public Response getProgramStatus() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManager cm = CacheManagerImpl.getInstance();
         StatusObjects status = (StatusObjects)cm.getEntry(NagiosParser.CACHEKEY);
         if(status == null) {
             return Response.serverError().build();
