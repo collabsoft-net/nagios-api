@@ -102,7 +102,11 @@ public class NagiosParser {
         if(type != null) {
             StatusObject statusObj = new StatusObjectImpl(type);
             statusObj.setProperties(getProperties(properties));
-            status.add(statusObj);
+            try {
+                status.add(statusObj);
+            } catch(UnsupportedOperationException ex) {
+                log.warn(ex);
+            }
         }
     }
     
