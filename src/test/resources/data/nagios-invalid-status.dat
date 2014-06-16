@@ -1,0 +1,17 @@
+
+blabla
+
+#somecomment
+
+unknownType {
+    notaproperty
+}
+
+servicestatus {
+	host_name=localhost
+        service_description=My First Service
+        notaproperty
+        #comment
+    }
+
+<html><body>My Beatifull HTML page</body></html>

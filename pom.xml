@@ -8,10 +8,35 @@
     <packaging>jar</packaging>
 
     <name>Nagios API</name>
+    <description>
+        The Nagios API project is designed to create a stand-alone REST API server
+        providing information about Nagios-like systems. 
+        
+        The Nagios API can process Nagios information using Nagios status information files (status.dat),
+        the output of Nagios CGI scripts or the output of the Icinga JSON API.
+        The Nagios API will provide REST endpoints returning JSON objects to be
+        consumed by applications who wish to integrate Nagios status information
+        into their systems. 
+        
+        From a security point-of-view, one of the key benefits 
+        of the Nagios API is that it allows System Administrators to proxy the 
+        Nagios status information, allowing integration with 3rd party applications
+        without exposing the actual Nagios instance.
+    </description>
 
     <organization>
         <name>Collabsoft</name>
     </organization>
+    
+    <developers>
+        <developer>
+            <name>Remie Bolte</name>
+            <organization>Collabsoft</organization>
+            <roles>
+                <role>Lead developer</role>
+            </roles>
+        </developer>
+    </developers>
     
     <licenses>
         <license>
@@ -19,7 +44,21 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-
+    
+    <scm>
+        <url>https://bitbucket.org/collabsoft/nagios-api</url>
+    </scm>
+    
+    <issueManagement>
+        <system>Atlassian JIRA (OnDemand)</system>
+        <url>https://collabsoft.atlassian.net/browse/NA</url>
+    </issueManagement>
+    
+    <ciManagement>
+        <system>Atlassian Bamboo (OnDemand)</system>
+        <url>https://collabsoft.atlassian.net/builds/browse/CS-NA</url>
+    </ciManagement>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -86,7 +125,47 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jmock</groupId>
+            <artifactId>jmock-cglib</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.5.5</version>
+            <scope>test</scope>
+	</dependency>
+	<dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.5.5</version>
+            <scope>test</scope>
+	</dependency>
+	<dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+	</dependency>
     </dependencies>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>            
+        </plugins>
+    </reporting>
 
     <build>
         <plugins>
@@ -99,7 +178,44 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-        <plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>cobertura</goal>
+                        </goals>
+                        <configuration>
+                            <instrumentation>
+                                <excludes>
+                                    <exclude>org/apache/commons/lang/**</exclude>
+                                </excludes>
+                            </instrumentation>
+                            <check>
+                                <branchRate>85</branchRate>
+                                <lineRate>85</lineRate>
+                                <haltOnFailure>true</haltOnFailure>
+                                <totalBranchRate>85</totalBranchRate>
+                                <totalLineRate>85</totalLineRate>
+                                <packageLineRate>85</packageLineRate>
+                                <packageBranchRate>85</packageBranchRate>
+                            </check>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun</groupId>
+                        <artifactId>tools</artifactId>
+                        <version>1.6</version>
+                        <scope>system</scope>
+                        <systemPath>${tools-jar}</systemPath>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
@@ -157,4 +273,29 @@
             </plugin>            
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>standard-jdk</id>
+            <activation>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <tools-jar>${java.home}/../lib/tools.jar</tools-jar>
+            </properties>
+        </profile>
+        <profile>
+            <id>apple-jdk</id>
+            <activation>
+                <file>
+                    <exists>${java.home}/../Classes/classes.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <tools-jar>${java.home}/../Classes/classes.jar</tools-jar>
+            </properties>
+        </profile>
+    </profiles>    
 </project>
