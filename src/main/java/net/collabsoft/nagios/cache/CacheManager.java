@@ -72,6 +72,9 @@ public enum CacheManager {
     }
     
     public void setEntry(String key, Object value) {
+        if(AppConfig.getInstance().isStateless()) {
+            throw new UnsupportedOperationException("The cache is initialized as 'stateless', meaning it will recreate the entry upon each GET request. Storing entries in cache is therefor not supported.");
+        }
         getCache().put(key, value);
     }
     
@@ -140,7 +143,7 @@ public enum CacheManager {
                 } catch(Exception e) {
                     try {
                         Class classObj = method.getDeclaringClass();
-                        method.invoke(classObj.newInstance());
+                        return method.invoke(classObj.newInstance());
                     } catch (Exception ex) {
                         log.warn("An error occurred while loading cache entry for key" + key, ex);
                         log.warn("Inner exception", e);
