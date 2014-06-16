@@ -2,6 +2,8 @@ package net.collabsoft.nagios.objects;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +48,11 @@ public class StatusObjects {
     public StatusObject getHost(String id) {
         StatusObject result = hosts.get(id);
         if(result == null) {
-            result = hosts.get(getHashIdentifier(id));
+            for(StatusObject statusObj : getHosts()) {
+                if(id.equals(statusObj.getProperty("host_name"))) {
+                    return statusObj;
+                }
+            }
         }
         return result;
     }
@@ -81,6 +87,12 @@ public class StatusObjects {
         return null;
     }
     
+    public String getHashIdentifier(StatusObject statusObj) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(statusObj);
+        return getHashIdentifier(json);
+    }
+    
     public String getHashIdentifier(String fingerprint) {
         String hash = DigestUtils.sha1Hex(fingerprint);
         return hash.substring(0,7);
@@ -97,16 +109,12 @@ public class StatusObjects {
     
     public void add(StatusObject statusObj) throws UnsupportedOperationException {
         
+        statusObj.setId(getHashIdentifier(statusObj));
         switch(statusObj.getType()) {
             case HOST:
-                String name = statusObj.getProperty("host_name");
-                statusObj.setId(getHashIdentifier(name));
                 this.hosts.put(statusObj.getId(), statusObj);
                 break;
             case SERVICE:
-                String host = statusObj.getProperty("host_name");
-                String desc = statusObj.getProperty("service_description");
-                statusObj.setId(getHashIdentifier(host + ";" + desc));
                 this.services.put(statusObj.getId(), statusObj);
                 break;
             case INFO:
