@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import jersey.repackaged.com.google.common.collect.Lists;
+import net.collabsoft.nagios.AppConfig.ParserType;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -20,9 +21,13 @@ public class TestAppConfig extends MockObjectTestCase {
     private static final Logger log = Logger.getLogger(TestAppConfig.class);
     
     private static final String PATH= System.getProperty("java.io.tmpdir") + "/nagios-api/status.dat";
-    private static final String HOST = "localhost";
-    private static final int PORT = 8081;
-    private static final boolean STATELESS = true;
+    private static final String TEST_HOST = "localhost";
+    private static final int TEST_PORT = 8081;
+    private static final boolean TEST_STATELESS = true;
+    private static final String TEST_URL = "http://localhost/nagios/cgi-bin/";
+    private static final String TEST_USERNAME = "username";
+    private static final String TEST_PASSWORD = "password";
+    private static final boolean TEST_INSECURE = false;
 
     // ----------------------------------------------------------------------------------------------- Constructor
 
@@ -49,9 +54,9 @@ public class TestAppConfig extends MockObjectTestCase {
     }
     
     @Test
-    public void testFromArgs() {
-        List<String> arguments = Lists.newArrayList("-i", PATH, "-h", HOST, "-p", String.valueOf(PORT));
-        if(STATELESS) { arguments.add("-s"); }
+    public void testStatusFromArgs() {
+        List<String> arguments = Lists.newArrayList("status", "-f", PATH, "-h", TEST_HOST, "-p", String.valueOf(TEST_PORT));
+        if(TEST_STATELESS) { arguments.add("-s"); }
         String[] args = arguments.toArray(new String[arguments.size()]);
         
         AppConfig config = null;
@@ -64,16 +69,41 @@ public class TestAppConfig extends MockObjectTestCase {
 
         assertNotNull(config);
         if(config != null) {
-            assertEquals(PATH, config.getInputFile());
-            assertEquals(HOST, config.getHostname());
-            assertEquals(PORT, config.getPort());
-            assertEquals(STATELESS, config.isStateless());
+            assertEquals(PATH, config.getFile());
+            assertEquals(TEST_HOST, config.getHostname());
+            assertEquals(TEST_PORT, config.getPort());
+            assertEquals(TEST_STATELESS, config.isStateless());
+        }
+    }
+
+    @Test
+    public void testHttpFromArgs() {
+        List<String> arguments = Lists.newArrayList("http", "-u", TEST_URL, "-username", TEST_USERNAME, "-password", TEST_PASSWORD, "-h", TEST_HOST, "-p", String.valueOf(TEST_PORT));
+        if(TEST_INSECURE) { arguments.add("-insecure"); }
+        String[] args = arguments.toArray(new String[arguments.size()]);
+        
+        AppConfig config = null;
+        try {
+            config = AppConfig.fromArgs(args);
+        } catch (ParseException ex) {
+            fail("This should not result in an exception");
+            log.error(ex);
+        }
+
+        assertNotNull(config);
+        if(config != null) {
+            assertEquals(TEST_HOST, config.getHostname());
+            assertEquals(TEST_PORT, config.getPort());
+            assertEquals(TEST_URL, config.getUrl());
+            assertEquals(TEST_USERNAME, config.getUsername());
+            assertEquals(TEST_PASSWORD, config.getPassword());
+            assertEquals(TEST_INSECURE, config.isInsecure());
         }
     }
     
     @Test
     public void testInvalidArgs1() {
-        List<String> arguments = Lists.newArrayList("-i", "invalid_path");
+        List<String> arguments = Lists.newArrayList("-f", "invalid_path");
         String[] args = arguments.toArray(new String[arguments.size()]);
         
         AppConfig config = null;
@@ -105,7 +135,7 @@ public class TestAppConfig extends MockObjectTestCase {
     
     @Test
     public void testInvalidArgs3() {
-        List<String> arguments = Lists.newArrayList("-i", "");
+        List<String> arguments = Lists.newArrayList("-f", "");
         String[] args = arguments.toArray(new String[arguments.size()]);
         
         AppConfig config = null;
@@ -121,7 +151,7 @@ public class TestAppConfig extends MockObjectTestCase {
     
     @Test
     public void testDefaultArgs() {
-        List<String> arguments = Lists.newArrayList("-i", PATH);
+        List<String> arguments = Lists.newArrayList("status", "-f", PATH);
         String[] args = arguments.toArray(new String[arguments.size()]);
         
         AppConfig config = null;
@@ -134,7 +164,7 @@ public class TestAppConfig extends MockObjectTestCase {
 
         assertNotNull(config);
         if(config != null) {
-            assertEquals(HOST, config.getHostname());
+            assertEquals(TEST_HOST, config.getHostname());
             assertEquals(AppServer.DEFAULT_PORT, config.getPort());
             assertEquals(false, config.isStateless() );
         }
@@ -144,17 +174,32 @@ public class TestAppConfig extends MockObjectTestCase {
     public void testProperties() {
         AppConfig config = AppConfig.getInstance();
 
-        config.setInputFile(PATH);
-        assertEquals(PATH, config.getInputFile());
+        config.setParserType(ParserType.STATUS);
+        assertEquals(ParserType.STATUS, config.getParserType());
         
-        config.setHostname(HOST);
-        assertEquals(HOST, config.getHostname());
+        config.setFile(PATH);
+        assertEquals(PATH, config.getFile());
         
-        config.setPort(PORT);
-        assertEquals(PORT, config.getPort());
+        config.setHostname(TEST_HOST);
+        assertEquals(TEST_HOST, config.getHostname());
         
-        config.setStateless(STATELESS);
-        assertEquals(STATELESS, config.isStateless());
+        config.setPort(TEST_PORT);
+        assertEquals(TEST_PORT, config.getPort());
+        
+        config.setStateless(TEST_STATELESS);
+        assertEquals(TEST_STATELESS, config.isStateless());
+        
+        config.setUrl(TEST_URL);
+        assertEquals(TEST_URL, config.getUrl());
+        
+        config.setUsername(TEST_USERNAME);
+        assertEquals(TEST_USERNAME, config.getUsername());
+        
+        config.setPassword(TEST_PASSWORD);
+        assertEquals(TEST_PASSWORD, config.getPassword());
+        
+        config.setInsecure(TEST_INSECURE);
+        assertEquals(TEST_INSECURE, config.isInsecure());
     }
     
     @Test
@@ -163,12 +208,43 @@ public class TestAppConfig extends MockObjectTestCase {
         
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(stdOut));
-        
+
+        AppConfig config = AppConfig.getInstance();
+        config.setParserType(ParserType.UNKNOWN);
         AppConfig.showOptions();
-        assertEquals(options, stdOut.toString());
+        assertEquals(options, stdOut.toString().trim());
         System.setOut(null);
     }
     
+    @Test
+    public void testShowStatusOptions() throws IOException {
+        String options = IOUtils.toString(this.getClass().getResourceAsStream("/showOptions-status.txt"),"UTF-8");
+        
+        ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(stdOut));
+
+        AppConfig config = AppConfig.getInstance();
+        config.setParserType(ParserType.STATUS);
+        AppConfig.showOptions();
+
+        assertEquals(options, stdOut.toString().trim());
+        System.setOut(null);
+    }
+
+    @Test
+    public void testShowHttpOptions() throws IOException {
+        String options = IOUtils.toString(this.getClass().getResourceAsStream("/showOptions-http.txt"),"UTF-8");
+        
+        ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(stdOut));
+        
+        AppConfig config = AppConfig.getInstance();
+        config.setParserType(ParserType.HTTP);
+        AppConfig.showOptions();
+
+        assertEquals(options, stdOut.toString().trim());
+        System.setOut(null);
+    }
     
 
     // ----------------------------------------------------------------------------------------------- Private methods

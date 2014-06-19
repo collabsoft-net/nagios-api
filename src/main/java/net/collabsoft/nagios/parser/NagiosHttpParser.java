@@ -10,9 +10,14 @@ import java.security.SecureRandom;
 import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import net.collabsoft.nagios.AppConfig;
+import net.collabsoft.nagios.AppConfig.ParserType;
+import net.collabsoft.nagios.cache.CacheLoaderForKey;
+import net.collabsoft.nagios.cache.CacheLoaderForParserType;
 import net.collabsoft.nagios.objects.StatusObject;
 import net.collabsoft.nagios.objects.StatusObjectImpl;
 import net.collabsoft.nagios.objects.StatusObjects;
+import static net.collabsoft.nagios.parser.NagiosParser.CACHEKEY;
 import net.collabsoft.nagios.utils.X509TrustManagerImpl;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -31,14 +36,12 @@ import org.jsoup.select.Elements;
 
 public class NagiosHttpParser {
 
-    public enum StatusObjectType { COMMENTS, SERVICEDETAILS, HOSTDETAILS, INFO, PROGRAMDATA }
     private static final Logger log = Logger.getLogger(NagiosHttpParser.class);
     
     private String baseUrl;
     private String username="";
     private String password="";
     private boolean trustSSLCertificate=false;
-    private StatusObjectType statusObjectType;
 
     private final StatusObjects status;
     private static final String CGI_INFO="extinfo.cgi?&type=0&embedded";
@@ -47,40 +50,32 @@ public class NagiosHttpParser {
     
     // ----------------------------------------------------------------------------------------------- Constructor
 
-    public NagiosHttpParser(StatusObjectType statusObjectType) {
+    public NagiosHttpParser() {
         this.status = new StatusObjects();
-        this.statusObjectType = statusObjectType;
     }
     
-    public NagiosHttpParser(StatusObjectType statusObjectType, String baseUrl) {
-        this(statusObjectType);
+    public NagiosHttpParser(String baseUrl) {
+        this();
         this.baseUrl = baseUrl;
     }
     
-    public NagiosHttpParser(StatusObjectType statusObjectType, String baseUrl, boolean trustSSLCertificate) {
-        this(statusObjectType, baseUrl);
+    public NagiosHttpParser(String baseUrl, boolean trustSSLCertificate) {
+        this(baseUrl);
         this.trustSSLCertificate = trustSSLCertificate;
     }
         
-    public NagiosHttpParser(StatusObjectType statusObjectType, String baseUrl, String username, String password) {
-        this(statusObjectType, baseUrl);
-        this.username = username;
-        this.password = password;
+    public NagiosHttpParser(String baseUrl, String username, String password) {
+        this(baseUrl);
+        this.username = (username != null) ? username : "";
+        this.password = (password != null) ? password : "";
     }
 
-    public NagiosHttpParser(StatusObjectType statusObjectType, String baseUrl, String username, String password, boolean trustSSLCertificate) {
-        this(statusObjectType, baseUrl, username, password);
+    public NagiosHttpParser(String baseUrl, String username, String password, boolean trustSSLCertificate) {
+        this(baseUrl, username, password);
         this.trustSSLCertificate = trustSSLCertificate;
     }
         
     // ----------------------------------------------------------------------------------------------- Getters & Setters
-    public StatusObjectType getStatusObjectType() {
-        return statusObjectType;
-    }
-
-    public void setStatusObjectType(StatusObjectType statusObjectType) {
-        this.statusObjectType = statusObjectType;
-    }
 
     public String getBaseUrl() {
         return baseUrl;
@@ -114,27 +109,28 @@ public class NagiosHttpParser {
         this.trustSSLCertificate = trustSSLCertificate;
     }
    
-    public StatusObjects parse() throws UnsupportedOperationException {
+    public StatusObjects parse() {
         status.clear();
         
-        switch(statusObjectType) {
-            case COMMENTS: throw new UnsupportedOperationException();
-            case INFO: status.add(getInfo()); break;
-            case PROGRAMDATA: status.add(getProgramInfo()); break;
-            case SERVICEDETAILS:
-            case HOSTDETAILS:
-                for(StatusObject hostObj : getHosts()) {
-                    status.add(hostObj);
-                }
-                for(StatusObject serviceObj : getServices()) {
-                    status.add(serviceObj);
-                }
-                break;
+        status.add(getInfo());
+        status.add(getProgramInfo());
+        for(StatusObject statusObj : getDetails()) {
+            status.add(statusObj);
         }
         
         return status;
     }
 
+    @CacheLoaderForKey(CACHEKEY)
+    @CacheLoaderForParserType(ParserType.HTTP)
+    public static StatusObjects getNagiosStatus() {
+        NagiosHttpParser parser = new NagiosHttpParser(AppConfig.getInstance().getUrl(), 
+                                                       AppConfig.getInstance().getUsername(), 
+                                                       AppConfig.getInstance().getPassword(),
+                                                       AppConfig.getInstance().isInsecure());
+        return parser.parse();
+    }
+    
     // ----------------------------------------------------------------------------------------------- Public methods
 
 
@@ -177,7 +173,7 @@ public class NagiosHttpParser {
         return result;
     }
     
-    private List<StatusObject> getHosts() {
+    private List<StatusObject> getDetails() {
         List<StatusObject> result = Lists.newArrayList();
 
         try {
@@ -185,19 +181,17 @@ public class NagiosHttpParser {
             List<Element> headers = document.select("table.status > tbody > tr:has(th) th");
             List<Element> rows = document.select("table.status > tbody > tr").not(":has(th)");
 
-            String hostname;
+            String hostname = null;
             for(Element row : rows) {
-                StatusObject host = new StatusObjectImpl(StatusObject.Type.HOST);
-
-                if(row.select("> td:eq(0)").hasText()) {
-                    hostname = row.select("> td:eq(0) table tbody tr:eq(0) td:eq(0) table tbody tr:eq(0) td:eq(0) a").text();
-                    host.setProperty("host_name", hostname);
-                    for(int i=0; i<headers.size(); i++) {
-                        String key = headers.get(i).text();
-                        String value = row.select(String.format("td:eq(%s)", i)).text();
-                        host.setProperty(key, value);
-                    }
-                    result.add(host);
+                StatusObject detailObj = getDetailObject(row, headers, hostname);
+                hostname = detailObj.getProperty("host_name");
+                result.add(detailObj);
+                
+                if(detailObj.getType().equals(StatusObject.Type.HOST)) {
+                    StatusObject serviceObj = new StatusObjectImpl(StatusObject.Type.SERVICE);
+                    serviceObj.setProperties(detailObj.getProperties());
+                    serviceObj.setProperty("service_description", detailObj.getProperty("service"));
+                    result.add(serviceObj);
                 }
             }
         } catch(IllegalArgumentException ex) {
@@ -207,36 +201,24 @@ public class NagiosHttpParser {
         return result;
     }
     
-    private List<StatusObject> getServices() {
-        List<StatusObject> result = Lists.newArrayList();
-        
-        try {
-            Document document = getDocument(getUrl(CGI_DETAILS));
-            List<Element> headers = document.select("table.status > tbody > tr:has(th) th");
-            List<Element> rows = document.select("table.status > tbody > tr").not(":has(th)");
+    private StatusObject getDetailObject(Element element, List<Element> headers, String hostname) {
+        StatusObject statusObj;
 
-            String hostname=null;
-            for(Element row : rows) {
-                if(row.select("> td:eq(0)").hasText()) {
-                    hostname = row.select("> td:eq(0) table tbody tr:eq(0) td:eq(0) table tbody tr:eq(0) td:eq(0) a").text();
-                }
-
-                StatusObject service = new StatusObjectImpl(StatusObject.Type.SERVICE);
-                service.setProperty("host_name", hostname);
-                service.setProperty("service_description", row.select("td:eq(1)").text());
-
-                for(int i=0; i<headers.size(); i++) {
-                    String key = headers.get(i).text();
-                    String value = row.select(String.format("td:eq(%s)", i)).text();
-                    service.setProperty(key, value);
-                }
-                result.add(service);
-            }
-        } catch(IllegalArgumentException ex) {
-            log.warn(ex);
+        if(element.select("> td:eq(0)").hasText()) {
+            hostname = element.select("> td:eq(0) table tbody tr:eq(0) td:eq(0) table tbody tr:eq(0) td:eq(0) a").text();
+            statusObj = new StatusObjectImpl(StatusObject.Type.HOST);
+        } else {
+            statusObj = new StatusObjectImpl(StatusObject.Type.SERVICE);
+            statusObj.setProperty("service_description", element.select("td:eq(1)").text());
         }
 
-        return result;
+        statusObj.setProperty("host_name", hostname);
+        for(int i=0; i<headers.size(); i++) {
+            String key = headers.get(i).text();
+            String value = element.select(String.format("td:eq(%s)", i)).text();
+            statusObj.setProperty(key, value);
+        }
+        return statusObj;
     }
     
     private Document getDocument(String url) throws IllegalArgumentException {

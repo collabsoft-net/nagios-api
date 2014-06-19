@@ -19,7 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest( FileUtils.class )
 public class TestNagiosParser extends MockObjectTestCase {
 
-    private enum NagiosVersion { INVALID, NOSTATUSFILE, V20, V30, V31, V32, V33, V34, V35, V40 }
+    private enum NagiosVersion { INVALID, NOSTATUSFILE, NONEXISTENT, V20, V30, V31, V32, V33, V34, V35, V40 }
     
     private static final String PATH = System.getProperty("java.io.tmpdir") + "/nagios-api/status.dat";
     private static final String TEST_PATH = "path";
@@ -93,6 +93,9 @@ public class TestNagiosParser extends MockObjectTestCase {
         PowerMockito.when(FileUtils.readFileToString(new File(PATH))).thenThrow(IOException.class);
         prepareStatusFile(NagiosVersion.INVALID);
         assertFalse(NagiosParser.isValidStatusFile(PATH));
+
+        assertFalse(NagiosParser.isValidStatusFile(System.getProperty("user.dir") + getPathForVersion(NagiosVersion.NONEXISTENT)));
+        assertFalse(NagiosParser.isValidStatusFile(null));
     }
     
     // ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -105,7 +108,7 @@ public class TestNagiosParser extends MockObjectTestCase {
 
     private void testBackwardsCompatibilityForVersion(NagiosVersion version) throws IOException {
         prepareStatusFile(version);
-        AppConfig.getInstance().setInputFile(PATH);
+        AppConfig.getInstance().setFile(PATH);
         StatusObjects status = NagiosParser.getNagiosStatus();
         assertNotNull(status);
         
@@ -154,6 +157,7 @@ public class TestNagiosParser extends MockObjectTestCase {
             case V40: return "/data/nagios-4.0-status.dat"; 
             case INVALID: return "/data/nagios-invalid-status.dat";
             case NOSTATUSFILE: return "/data/nagios-3.0-info.html";
+            case NONEXISTENT: return "/data/nagios-file-does-not-exist.dat";
             default: return "";
         }
     }

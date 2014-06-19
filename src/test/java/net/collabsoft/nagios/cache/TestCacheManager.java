@@ -105,6 +105,8 @@ public class TestCacheManager extends MockObjectTestCase {
     public void testRefresh() {
         CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         
+        AppConfig config = AppConfig.getInstance();
+        config.setParserType(AppConfig.ParserType.STATUS);
         TestCacheEntry cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
         assertNotNull(cacheEntry);
 

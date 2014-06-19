@@ -37,7 +37,7 @@ public class TestServices extends MockObjectTestCase {
     public void setUp() throws IOException {
         String status = IOUtils.toString(this.getClass().getResourceAsStream("/data/nagios-3.0-status.dat"),"UTF-8");
         FileUtils.write(new File(PATH), status);
-        AppConfig.getInstance().setInputFile(PATH);
+        AppConfig.getInstance().setFile(PATH);
         statusObjects = NagiosParser.getNagiosStatus();
 
         Mock mockCacheManager = new Mock(CacheManager.class);
