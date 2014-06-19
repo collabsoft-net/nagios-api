@@ -131,16 +131,21 @@ public class NagiosParser {
     }
     
     private String getFileContents() {
-        File inputFile = new File(path);
-        if(inputFile.exists()) {
-            try {
-                return FileUtils.readFileToString(new File(path));
-            } catch(IOException ex) {
-                log.debug(ex);
+        try {
+            File inputFile = new File(path);
+            if(inputFile.exists()) {
+                try {
+                    return FileUtils.readFileToString(new File(path));
+                } catch(IOException ex) {
+                    log.debug(ex);
+                    return null;
+                }
+            } else {
+                log.error("Nagios 'status.dat' file not found. Path: " + path);
                 return null;
             }
-        } else {
-            log.error("Nagios 'status.dat' file not found. Path: " + path);
+        } catch (NullPointerException npe) {
+            log.error("Nagios 'status.dat' file not found: invalid path provided", npe);
             return null;
         }
     }
