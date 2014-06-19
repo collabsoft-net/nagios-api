@@ -54,25 +54,25 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
 
     @Test
     public void testConstructor() {
-        NagiosHttpParser parser = new NagiosHttpParser();
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl();
         assertNotNull(parser);
         
-        parser = new NagiosHttpParser(TEST_BASEURL);
+        parser = new NagiosHttpParserImpl(TEST_BASEURL);
         assertNotNull(parser);
         assertEquals(TEST_BASEURL, parser.getBaseUrl());
 
-        parser = new NagiosHttpParser(TEST_BASEURL, TEST_TRUSTSSLCERTIFICATE);
+        parser = new NagiosHttpParserImpl(TEST_BASEURL, TEST_TRUSTSSLCERTIFICATE);
         assertNotNull(parser);
         assertEquals(TEST_BASEURL, parser.getBaseUrl());
         assertEquals(TEST_TRUSTSSLCERTIFICATE, parser.shouldTrustSSLCertificate());
         
-        parser = new NagiosHttpParser( TEST_BASEURL, TEST_USERNAME, TEST_PASSWORD);
+        parser = new NagiosHttpParserImpl( TEST_BASEURL, TEST_USERNAME, TEST_PASSWORD);
         assertNotNull(parser);
         assertEquals(TEST_BASEURL, parser.getBaseUrl());
         assertEquals(TEST_USERNAME, parser.getUsername());
         assertEquals(TEST_PASSWORD, parser.getPassword());
         
-        parser = new NagiosHttpParser( TEST_BASEURL, TEST_USERNAME, TEST_PASSWORD, TEST_TRUSTSSLCERTIFICATE);
+        parser = new NagiosHttpParserImpl( TEST_BASEURL, TEST_USERNAME, TEST_PASSWORD, TEST_TRUSTSSLCERTIFICATE);
         assertNotNull(parser);
         assertEquals(TEST_BASEURL, parser.getBaseUrl());
         assertEquals(TEST_USERNAME, parser.getUsername());
@@ -82,7 +82,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
     
     @Test
     public void testProperties() {
-        NagiosHttpParser parser = new NagiosHttpParser();
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl();
         parser.setBaseUrl(TEST_BASEURL);
         parser.setUsername(TEST_USERNAME);
         parser.setPassword(TEST_PASSWORD);
@@ -142,7 +142,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(SSLContext.class);
         PowerMockito.when(SSLContext.getInstance((String)any())).thenReturn(mockSSLContext);
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_BASEURL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_BASEURL);
         parser.setTrustSSLCertificate(TEST_TRUSTSSLCERTIFICATE);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
@@ -158,7 +158,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(HttpClientBuilder.class);
         PowerMockito.when(HttpClientBuilder.create()).thenReturn((HttpClientBuilder)mockBuilder);
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_BASEURL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_BASEURL);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
         assertNull(status.getProgramStatus().getProperty("Program Version:"));
@@ -175,7 +175,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(HttpClientBuilder.class);
         PowerMockito.when(HttpClientBuilder.create()).thenReturn((HttpClientBuilder)mockBuilder);
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_INVALID_URL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_INVALID_URL);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
     }    
@@ -189,7 +189,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(HttpClientBuilder.class);
         PowerMockito.when(HttpClientBuilder.create()).thenReturn((HttpClientBuilder)mockBuilder);
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_BASEURL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_BASEURL);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
     }    
@@ -205,7 +205,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(SSLContext.class);
         PowerMockito.when(SSLContext.getInstance((String)any())).thenThrow(new NoSuchAlgorithmException());
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_BASEURL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_BASEURL);
         parser.setTrustSSLCertificate(TEST_TRUSTSSLCERTIFICATE);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
@@ -225,7 +225,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
         PowerMockito.mockStatic(SSLContext.class);
         PowerMockito.when(SSLContext.getInstance((String)any())).thenReturn(mockSSLContext);
 
-        NagiosHttpParser parser = new NagiosHttpParser(TEST_BASEURL);
+        NagiosHttpParserImpl parser = new NagiosHttpParserImpl(TEST_BASEURL);
         parser.setTrustSSLCertificate(TEST_TRUSTSSLCERTIFICATE);
         StatusObjects status = parser.parse();
         assertNull(status.getInfo().getProperty("version"));
@@ -253,7 +253,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
 
         AppConfig config = AppConfig.getInstance();
         config.setUrl(TEST_BASEURL);
-        StatusObjects status = NagiosHttpParser.getNagiosStatus();
+        StatusObjects status = NagiosHttpParserImpl.getNagiosStatus();
         
         switch(type) {
             case INFO:

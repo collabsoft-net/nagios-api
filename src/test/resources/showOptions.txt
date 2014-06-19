@@ -1,1 +1,1 @@
-usage: nagios-api [status|http] [options]
+usage: nagios-api [file|http] [options]

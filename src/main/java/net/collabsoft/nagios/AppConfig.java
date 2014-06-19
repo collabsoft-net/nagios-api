@@ -1,6 +1,7 @@
 package net.collabsoft.nagios;
 
 import com.google.gson.annotations.Expose;
+import net.collabsoft.nagios.parser.NagiosFileParserImpl;
 import net.collabsoft.nagios.parser.NagiosParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -13,7 +14,7 @@ public enum AppConfig {
 
     INSTANCE;
     
-    public enum ParserType { UNKNOWN, STATUS, HTTP };
+    public enum ParserType { UNKNOWN, FILE, HTTP };
     
     @Expose private ParserType parserType = ParserType.UNKNOWN;
     @Expose private String hostname;
@@ -124,13 +125,13 @@ public enum AppConfig {
         
         switch(config.getParserType()) {
             case UNKNOWN:
-                formatter.printHelp( "nagios-api [status|http] [options]" + System.lineSeparator(), config.getOptions() );
+                formatter.printHelp( "nagios-api [file|http] [options]" + System.lineSeparator(), config.getOptions() );
                 break;
-            case STATUS:
-                formatter.printHelp( "nagios-api status -i \"path to status.dat\" [options]" + System.lineSeparator(), config.getOptions() );
+            case FILE:
+                formatter.printHelp( "nagios-api file -i \"path to status.dat\" [options]" + System.lineSeparator(), config.getOptions() );
                 break;
             case HTTP:
-                formatter.printHelp( "nagios-api status -u \"Url to Nagios cgi-bin directory ('http://example.org/nagios/cgi-bin/')\" [options]" + System.lineSeparator(), config.getOptions() );
+                formatter.printHelp( "nagios-api http -u \"Url to Nagios cgi-bin directory ('http://example.org/nagios/cgi-bin/')\" [options]" + System.lineSeparator(), config.getOptions() );
                 break;
         }
     }
@@ -140,17 +141,17 @@ public enum AppConfig {
     private void loadArgs(String[] args) throws ParseException {
 
         if(args.length >= 1) {
-            if(args[0].equals("status")) {
-                this.parserType = ParserType.STATUS;
+            if(args[0].equals("file")) {
+                this.parserType = ParserType.FILE;
             } else if(args[0].equals("http")) {
                 this.parserType = ParserType.HTTP;
             } else {
                 this.parserType = ParserType.UNKNOWN;
-                throw new ParseException("Please choose a Nagios parser (status|http)");
+                throw new ParseException("Please choose a Nagios parser ('file' or 'http')");
             }
         } else {
             this.parserType = ParserType.UNKNOWN;
-            throw new ParseException("Please choose which parser type to use ('status' or 'http') to retrieve Nagios information");
+            throw new ParseException("Please choose which parser type to use ('file' or 'http') to retrieve Nagios information");
         }
         
         CommandLineParser parser = new PosixParser();
@@ -169,9 +170,10 @@ public enum AppConfig {
         
         // Throw exception for required options
         switch(parserType) {
-            case STATUS:
+            case FILE:
                 if(!cmd.hasOption("f") || cmd.getOptionValue("f").isEmpty()) throw new ParseException("'-f','--file' is required.");
-                if(!NagiosParser.isValidStatusFile(file)) { throw new ParseException("Could not parse Nagios status information file"); }
+                NagiosParser nagiosFileParser = new NagiosFileParserImpl(file);
+                if(!nagiosFileParser.isValid()) { throw new ParseException("Could not parse Nagios status information file"); }
                 break;
                 
             case HTTP:
@@ -192,7 +194,7 @@ public enum AppConfig {
         }
         
         switch(parserType) {
-            case STATUS:
+            case FILE:
                 options.addOption("f", "file", true, "Path to Nagios 'status.dat' file (Nagios version 3 or later)");
                 break;
             case HTTP:

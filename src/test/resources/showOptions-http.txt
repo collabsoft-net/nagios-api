@@ -1,4 +1,4 @@
-usage: nagios-api status -u "Url to Nagios cgi-bin directory ('http://example.org/nagios/cgi-bin/')" [options]
+usage: nagios-api http -u "Url to Nagios cgi-bin directory ('http://example.org/nagios/cgi-bin/')" [options]
                   
  -h,--host <arg>   Binds the Nagios API server to the given hostname or IP address
  -insecure         Ignore invalid SSL certificates when connecting to https

@@ -9,7 +9,7 @@ import net.collabsoft.nagios.AppConfig;
 import net.collabsoft.nagios.cache.CacheManager;
 import net.collabsoft.nagios.cache.CacheManagerImpl;
 import net.collabsoft.nagios.objects.StatusObjects;
-import net.collabsoft.nagios.parser.NagiosParser;
+import net.collabsoft.nagios.parser.NagiosFileParserImpl;
 import net.collabsoft.nagios.rest.v1.Hosts;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -38,7 +38,7 @@ public class TestHosts extends MockObjectTestCase {
         String status = IOUtils.toString(this.getClass().getResourceAsStream("/data/nagios-3.0-status.dat"),"UTF-8");
         FileUtils.write(new File(PATH), status);
         AppConfig.getInstance().setFile(PATH);
-        statusObjects = NagiosParser.getNagiosStatus();
+        statusObjects = NagiosFileParserImpl.getNagiosStatus();
 
         Mock mockCacheManager = new Mock(CacheManager.class);
         mockCacheManager.expects(once()).method("getEntry").will(returnValue(null));

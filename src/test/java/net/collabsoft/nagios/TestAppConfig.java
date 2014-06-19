@@ -55,7 +55,7 @@ public class TestAppConfig extends MockObjectTestCase {
     
     @Test
     public void testStatusFromArgs() {
-        List<String> arguments = Lists.newArrayList("status", "-f", PATH, "-h", TEST_HOST, "-p", String.valueOf(TEST_PORT));
+        List<String> arguments = Lists.newArrayList("file", "-f", PATH, "-h", TEST_HOST, "-p", String.valueOf(TEST_PORT));
         if(TEST_STATELESS) { arguments.add("-s"); }
         String[] args = arguments.toArray(new String[arguments.size()]);
         
@@ -151,7 +151,7 @@ public class TestAppConfig extends MockObjectTestCase {
     
     @Test
     public void testDefaultArgs() {
-        List<String> arguments = Lists.newArrayList("status", "-f", PATH);
+        List<String> arguments = Lists.newArrayList("file", "-f", PATH);
         String[] args = arguments.toArray(new String[arguments.size()]);
         
         AppConfig config = null;
@@ -174,8 +174,8 @@ public class TestAppConfig extends MockObjectTestCase {
     public void testProperties() {
         AppConfig config = AppConfig.getInstance();
 
-        config.setParserType(ParserType.STATUS);
-        assertEquals(ParserType.STATUS, config.getParserType());
+        config.setParserType(ParserType.FILE);
+        assertEquals(ParserType.FILE, config.getParserType());
         
         config.setFile(PATH);
         assertEquals(PATH, config.getFile());
@@ -217,14 +217,14 @@ public class TestAppConfig extends MockObjectTestCase {
     }
     
     @Test
-    public void testShowStatusOptions() throws IOException {
-        String options = IOUtils.toString(this.getClass().getResourceAsStream("/showOptions-status.txt"),"UTF-8");
+    public void testShowFileOptions() throws IOException {
+        String options = IOUtils.toString(this.getClass().getResourceAsStream("/showOptions-file.txt"),"UTF-8");
         
         ByteArrayOutputStream stdOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(stdOut));
 
         AppConfig config = AppConfig.getInstance();
-        config.setParserType(ParserType.STATUS);
+        config.setParserType(ParserType.FILE);
         AppConfig.showOptions();
 
         assertEquals(options, stdOut.toString().trim());

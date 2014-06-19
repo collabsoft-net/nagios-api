@@ -38,26 +38,17 @@ public class TestNagiosParser extends MockObjectTestCase {
 
     @Test
     public void testConstructor() {
-        NagiosParser parser = new NagiosParser(PATH);
+        NagiosParser parser = new NagiosFileParserImpl(PATH);
         assertNotNull(parser);
     }
     
     @Test
     public void testProperties() {
-        NagiosParser parser = new NagiosParser(PATH);
+        NagiosFileParserImpl parser = new NagiosFileParserImpl(PATH);
         assertEquals(PATH, parser.getPath());
         
         parser.setPath(TEST_PATH);
         assertEquals(TEST_PATH, parser.getPath());
-    }
-    
-    @Test
-    public void testValidStatusFile() throws IOException {
-        assertTrue(NagiosParser.isValidStatusFile(PATH));
-        assertFalse(NagiosParser.isValidStatusFile(null));
-
-        prepareStatusFile(NagiosVersion.V20);
-        assertFalse(NagiosParser.isValidStatusFile(PATH));
     }
     
     @Test
@@ -74,28 +65,42 @@ public class TestNagiosParser extends MockObjectTestCase {
             fail("This should not throw an IOException");
         }
     }
+
+    @Test
+    public void testValidStatusFile() throws IOException {
+        NagiosParser parser = new NagiosFileParserImpl(PATH);
+        assertTrue(parser.isValid());
+    }
     
     @Test
-    public void testInvalidInputFile() throws IOException {
+    public void testInvalidStatusFile() throws IOException {
         prepareStatusFile(NagiosVersion.V20);
-        assertFalse(NagiosParser.isValidStatusFile(PATH));
+        NagiosParser parser = new NagiosFileParserImpl(PATH);
+        assertFalse(parser.isValid());
 
         prepareStatusFile(NagiosVersion.INVALID);
-        assertFalse(NagiosParser.isValidStatusFile(PATH));
-        NagiosParser parser = new NagiosParser(PATH);
+        parser = new NagiosFileParserImpl(PATH);    
+        assertFalse(parser.isValid());
+
+        parser = new NagiosFileParserImpl(PATH);
         StatusObjects status = parser.parse();
         assertEquals(1, status.getServices().size());
         
         prepareStatusFile(NagiosVersion.NOSTATUSFILE);
-        assertFalse(NagiosParser.isValidStatusFile(PATH));
+        parser = new NagiosFileParserImpl(PATH);
+        assertFalse(parser.isValid());
         
         PowerMockito.mockStatic(FileUtils.class);
         PowerMockito.when(FileUtils.readFileToString(new File(PATH))).thenThrow(IOException.class);
         prepareStatusFile(NagiosVersion.INVALID);
-        assertFalse(NagiosParser.isValidStatusFile(PATH));
+        parser = new NagiosFileParserImpl(PATH);
+        assertFalse(parser.isValid());
+        
+        parser = new NagiosFileParserImpl(System.getProperty("user.dir") + getPathForVersion(NagiosVersion.NONEXISTENT));
+        assertFalse(parser.isValid());
 
-        assertFalse(NagiosParser.isValidStatusFile(System.getProperty("user.dir") + getPathForVersion(NagiosVersion.NONEXISTENT)));
-        assertFalse(NagiosParser.isValidStatusFile(null));
+        parser = new NagiosFileParserImpl(null);
+        assertFalse(parser.isValid());
     }
     
     // ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -109,7 +114,7 @@ public class TestNagiosParser extends MockObjectTestCase {
     private void testBackwardsCompatibilityForVersion(NagiosVersion version) throws IOException {
         prepareStatusFile(version);
         AppConfig.getInstance().setFile(PATH);
-        StatusObjects status = NagiosParser.getNagiosStatus();
+        StatusObjects status = NagiosFileParserImpl.getNagiosStatus();
         assertNotNull(status);
         
         assertNotNull(status.getInfo());

@@ -30,19 +30,19 @@ public class TestCacheEntry {
     // ----------------------------------------------------------------------------------------------- Public methods
 
     @CacheLoaderForKey(CACHEKEY)
-    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
+    @CacheLoaderForParserType(AppConfig.ParserType.FILE)
     public static TestCacheEntry getTestCacheEntry() {
         return new TestCacheEntry();
     }
     
     @CacheLoaderForKey(ALT_CACHEKEY)
-    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
+    @CacheLoaderForParserType(AppConfig.ParserType.FILE)
     public TestCacheEntry getAltTestCacheEntry() {
         return this;
     }
     
     @CacheLoaderForKey(ERROR_CACHEKEY)
-    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
+    @CacheLoaderForParserType(AppConfig.ParserType.FILE)
     public TestCacheEntry getErrorTestCacheEntry() {
         throw new UnsupportedOperationException();
     }

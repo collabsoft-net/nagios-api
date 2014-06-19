@@ -17,7 +17,6 @@ import net.collabsoft.nagios.cache.CacheLoaderForParserType;
 import net.collabsoft.nagios.objects.StatusObject;
 import net.collabsoft.nagios.objects.StatusObjectImpl;
 import net.collabsoft.nagios.objects.StatusObjects;
-import static net.collabsoft.nagios.parser.NagiosParser.CACHEKEY;
 import net.collabsoft.nagios.utils.X509TrustManagerImpl;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -34,9 +33,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class NagiosHttpParser {
+public class NagiosHttpParserImpl extends AbstractParserImpl {
 
-    private static final Logger log = Logger.getLogger(NagiosHttpParser.class);
+    private static final Logger log = Logger.getLogger(NagiosParser.class);
     
     private String baseUrl;
     private String username="";
@@ -50,27 +49,27 @@ public class NagiosHttpParser {
     
     // ----------------------------------------------------------------------------------------------- Constructor
 
-    public NagiosHttpParser() {
+    public NagiosHttpParserImpl() {
         this.status = new StatusObjects();
     }
     
-    public NagiosHttpParser(String baseUrl) {
+    public NagiosHttpParserImpl(String baseUrl) {
         this();
         this.baseUrl = baseUrl;
     }
     
-    public NagiosHttpParser(String baseUrl, boolean trustSSLCertificate) {
+    public NagiosHttpParserImpl(String baseUrl, boolean trustSSLCertificate) {
         this(baseUrl);
         this.trustSSLCertificate = trustSSLCertificate;
     }
         
-    public NagiosHttpParser(String baseUrl, String username, String password) {
+    public NagiosHttpParserImpl(String baseUrl, String username, String password) {
         this(baseUrl);
         this.username = (username != null) ? username : "";
         this.password = (password != null) ? password : "";
     }
 
-    public NagiosHttpParser(String baseUrl, String username, String password, boolean trustSSLCertificate) {
+    public NagiosHttpParserImpl(String baseUrl, String username, String password, boolean trustSSLCertificate) {
         this(baseUrl, username, password);
         this.trustSSLCertificate = trustSSLCertificate;
     }
@@ -124,7 +123,7 @@ public class NagiosHttpParser {
     @CacheLoaderForKey(CACHEKEY)
     @CacheLoaderForParserType(ParserType.HTTP)
     public static StatusObjects getNagiosStatus() {
-        NagiosHttpParser parser = new NagiosHttpParser(AppConfig.getInstance().getUrl(), 
+        NagiosParser parser = new NagiosHttpParserImpl(AppConfig.getInstance().getUrl(), 
                                                        AppConfig.getInstance().getUsername(), 
                                                        AppConfig.getInstance().getPassword(),
                                                        AppConfig.getInstance().isInsecure());
