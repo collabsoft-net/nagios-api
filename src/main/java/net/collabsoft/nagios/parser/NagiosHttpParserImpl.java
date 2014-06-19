@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.Normalizer;
 import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -145,7 +146,7 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             Document document = getDocument(getUrl(CGI_INFO));
             String value = document.select("table.data table > tbody > tr:eq(0) td:eq(1)").text();
             if(!value.isEmpty()) {
-                result.setProperty("version", value);
+                result.setProperty("version", Normalizer.normalize(value, Normalizer.Form.NFKC));
             }
         } catch(IllegalArgumentException ex) {
             log.warn(ex);
@@ -163,7 +164,7 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             for(Element element : elements) {
                 Elements keyCell = element.select("td.dataVar");
                 Elements valueCell = element.select("td.dataVal");
-                result.setProperty(keyCell.text(), valueCell.text());
+                result.setProperty(getSanitizedKey(keyCell.text()), Normalizer.normalize(valueCell.text(), Normalizer.Form.NFKC));
             }
         } catch(IllegalArgumentException ex) {
             log.warn(ex);
@@ -184,14 +185,18 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             for(Element row : rows) {
                 StatusObject detailObj = getDetailObject(row, headers, hostname);
                 hostname = detailObj.getProperty("host_name");
-                result.add(detailObj);
                 
                 if(detailObj.getType().equals(StatusObject.Type.HOST)) {
                     StatusObject serviceObj = new StatusObjectImpl(StatusObject.Type.SERVICE);
                     serviceObj.setProperties(detailObj.getProperties());
                     serviceObj.setProperty("service_description", detailObj.getProperty("service"));
                     result.add(serviceObj);
+                    
+                    detailObj.getProperties().remove("service");
+                    detailObj.getProperties().remove("service_description");
                 }
+                
+                result.add(detailObj);
             }
         } catch(IllegalArgumentException ex) {
             log.warn(ex);
@@ -208,16 +213,24 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             statusObj = new StatusObjectImpl(StatusObject.Type.HOST);
         } else {
             statusObj = new StatusObjectImpl(StatusObject.Type.SERVICE);
-            statusObj.setProperty("service_description", element.select("td:eq(1)").text());
+            statusObj.setProperty("service_description", Normalizer.normalize(element.select("td:eq(1)").text(), Normalizer.Form.NFKC));
         }
 
         statusObj.setProperty("host_name", hostname);
-        for(int i=0; i<headers.size(); i++) {
+        for(int i=1; i<headers.size(); i++) {
             String key = headers.get(i).text();
             String value = element.select(String.format("td:eq(%s)", i)).text();
-            statusObj.setProperty(key, value);
+            statusObj.setProperty(getSanitizedKey(key), Normalizer.normalize(value, Normalizer.Form.NFKC));
         }
         return statusObj;
+    }
+    
+    private String getSanitizedKey(String key) {
+        key = key.replace(" ", "_");
+        key = key.replace(System.lineSeparator(), "");
+        key = Normalizer.normalize(key, Normalizer.Form.NFKC);
+        key = key.toLowerCase().trim();
+        return key;
     }
     
     private Document getDocument(String url) throws IllegalArgumentException {
