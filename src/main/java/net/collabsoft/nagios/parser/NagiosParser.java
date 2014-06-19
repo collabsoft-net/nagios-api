@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import net.collabsoft.nagios.AppConfig;
+import net.collabsoft.nagios.AppConfig.ParserType;
 import net.collabsoft.nagios.cache.CacheLoaderForKey;
+import net.collabsoft.nagios.cache.CacheLoaderForParserType;
 import net.collabsoft.nagios.objects.StatusObjects;
 import net.collabsoft.nagios.objects.StatusObject;
 import net.collabsoft.nagios.objects.StatusObject.Type;
@@ -85,8 +87,9 @@ public class NagiosParser {
     }
 
     @CacheLoaderForKey(CACHEKEY)
+    @CacheLoaderForParserType(ParserType.STATUS)
     public static StatusObjects getNagiosStatus() {
-        NagiosParser parser = new NagiosParser(AppConfig.getInstance().getInputFile());
+        NagiosParser parser = new NagiosParser(AppConfig.getInstance().getFile());
         return parser.parse();
     }
     

@@ -105,7 +105,7 @@ public class TestNagiosParser extends MockObjectTestCase {
 
     private void testBackwardsCompatibilityForVersion(NagiosVersion version) throws IOException {
         prepareStatusFile(version);
-        AppConfig.getInstance().setInputFile(PATH);
+        AppConfig.getInstance().setFile(PATH);
         StatusObjects status = NagiosParser.getNagiosStatus();
         assertNotNull(status);
         

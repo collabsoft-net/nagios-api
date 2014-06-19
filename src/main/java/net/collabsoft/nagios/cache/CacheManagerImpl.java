@@ -136,8 +136,10 @@ public enum CacheManagerImpl implements CacheManager {
                                                   .addScanners(new MethodAnnotationsScanner()));
         Set<Method> annotated = reflections.getMethodsAnnotatedWith(CacheLoaderForKey.class);
         for(Method method : annotated) {
-            CacheLoaderForKey annotation = method.getAnnotation(CacheLoaderForKey.class);
-            if(annotation.value().equals(key)) {
+            CacheLoaderForKey keyAnnotation = method.getAnnotation(CacheLoaderForKey.class);
+            CacheLoaderForParserType parserAnnotation = method.getAnnotation(CacheLoaderForParserType.class);
+            
+            if(keyAnnotation.value().equals(key) && parserAnnotation.value().equals(AppConfig.getInstance().getParserType())) {
                 try {
                     return method.invoke(null);
                 } catch(Exception e) {

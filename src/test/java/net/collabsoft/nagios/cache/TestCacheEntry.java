@@ -1,5 +1,7 @@
 package net.collabsoft.nagios.cache;
 
+import net.collabsoft.nagios.AppConfig;
+
 
 public class TestCacheEntry {
 
@@ -28,16 +30,19 @@ public class TestCacheEntry {
     // ----------------------------------------------------------------------------------------------- Public methods
 
     @CacheLoaderForKey(CACHEKEY)
+    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
     public static TestCacheEntry getTestCacheEntry() {
         return new TestCacheEntry();
     }
     
     @CacheLoaderForKey(ALT_CACHEKEY)
+    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
     public TestCacheEntry getAltTestCacheEntry() {
         return this;
     }
     
     @CacheLoaderForKey(ERROR_CACHEKEY)
+    @CacheLoaderForParserType(AppConfig.ParserType.STATUS)
     public TestCacheEntry getErrorTestCacheEntry() {
         throw new UnsupportedOperationException();
     }
