@@ -1,18 +1,18 @@
 package net.collabsoft.nagios.objects;
 
 import com.google.gson.annotations.Expose;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class StatusObjectImpl implements StatusObject {
 
     @Expose private String id;
     @Expose private Type type;
-    @Expose private HashMap<String, String> properties;
+    @Expose private LinkedHashMap<String, String> properties;
     
     // ----------------------------------------------------------------------------------------------- Constructor
 
     public StatusObjectImpl() {
-        this.properties = new HashMap<String, String>();
+        this.properties = new LinkedHashMap<String, String>();
     }
     
     public StatusObjectImpl(Type type) {
@@ -46,11 +46,11 @@ public class StatusObjectImpl implements StatusObject {
         this.properties.put(key, value);
     }
     
-    public HashMap<String, String> getProperties() {
+    public LinkedHashMap<String, String> getProperties() {
         return this.properties;
     }
     
-    public void setProperties(HashMap<String, String> properties) {
+    public void setProperties(LinkedHashMap<String, String> properties) {
         this.properties = properties;
     }
 

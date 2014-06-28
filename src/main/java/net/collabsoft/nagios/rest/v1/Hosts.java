@@ -6,6 +6,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.collabsoft.nagios.cache.CacheManager;
+import net.collabsoft.nagios.cache.CacheManagerImpl;
 import net.collabsoft.nagios.objects.StatusObjects;
 import net.collabsoft.nagios.parser.NagiosParser;
 
@@ -24,7 +25,7 @@ public class Hosts {
     @Produces (MediaType.APPLICATION_JSON) 
     @Path ("/list") 
     public Response getHosts() {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManager cm = CacheManagerImpl.getInstance();
         StatusObjects status = (StatusObjects)cm.getEntry(NagiosParser.CACHEKEY);
         if(status == null) {
             return Response.serverError().build();
@@ -39,7 +40,7 @@ public class Hosts {
     @Produces (MediaType.APPLICATION_JSON) 
     @Path ("/detail/{id}")
     public Response getHost(@PathParam("id") String nameOrId) {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManager cm = CacheManagerImpl.getInstance();
         StatusObjects status = (StatusObjects)cm.getEntry(NagiosParser.CACHEKEY);
         if(status == null) {
             return Response.serverError().build();
@@ -54,7 +55,7 @@ public class Hosts {
     @Produces (MediaType.APPLICATION_JSON) 
     @Path ("/detail/{id}/services")
     public Response getHostServices(@PathParam("id") String nameOrId) {
-        CacheManager cm = CacheManager.getInstance();
+        CacheManager cm = CacheManagerImpl.getInstance();
         StatusObjects status = (StatusObjects)cm.getEntry(NagiosParser.CACHEKEY);
         if(status == null) {
             return Response.serverError().build();

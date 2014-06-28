@@ -1,0 +1,296 @@
+<table class='headertable'>
+<tr>
+<td align=left valign=top width=33%>
+<TABLE CLASS='infoBox' BORDER=1 CELLSPACING=0 CELLPADDING=0>
+<TR><TD CLASS='infoBox'>
+<DIV CLASS='infoBoxTitle'>Current Network Status</DIV>
+Last Updated: Sun Jun 15 18:33:45 CEST 2014<BR>
+Updated every 90 seconds<br>
+Nagios&reg; Core&trade; 4.0.0 - <A HREF='http://www.nagios.org' TARGET='_new' CLASS='homepageURL'>www.nagios.org</A><BR>
+Logged in as <i>?</i><BR>
+</TD></TR>
+</TABLE>
+<table class='linkBox'>
+<tr><td class='linkBox'>
+<a href='status.cgi?hostgroup=all&style=hostdetail'>View Host Status Detail For All Host Groups</a><br>
+<a href='status.cgi?hostgroup=all&style=overview'>View Status Overview For All Host Groups</a><br>
+<a href='status.cgi?hostgroup=all&style=summary'>View Status Summary For All Host Groups</a><br>
+<a href='status.cgi?hostgroup=all&style=grid'>View Status Grid For All Host Groups</a><br>
+</td></tr>
+</table>
+</td>
+<td align=center valign=top width=33%>
+<div class='hostTotals'>Host Status Totals</div>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr><td>
+<table class='hostTotals'>
+<tr>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=2'>Up</a></th>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=4'>Down</a></th>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=8'>Unreachable</a></th>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=1'>Pending</a></th>
+</tr>
+<tr>
+<td class='hostTotalsUP'>1</td>
+<td class='hostTotals'>0</td>
+<td class='hostTotals'>0</td>
+<td class='hostTotals'>0</td>
+</tr>
+</table>
+</td></tr><tr><td align='center'>
+<table class='hostTotals'>
+<tr>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=12'><em>All Problems</em></a></th>
+<th class='hostTotals'><a class='hostTotals' href='status.cgi?hostgroup=all&style=detail'><em>All Types</em></a></th>
+</tr><tr>
+<td class='hostTotals'>0</td>
+<td class='hostTotals'>1</td>
+</tr>
+</table>
+</td></tr>
+</table>
+</div>
+</td>
+<td align=center valign=top width=33%>
+<div class='serviceTotals'>Service Status Totals</div>
+<table border='0' cellspacing='0' cellpadding='0'>
+<tr><td>
+<table class='serviceTotals'>
+<tr>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=2&hoststatustypes=15'>Ok</a></th>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=4&hoststatustypes=15'>Warning</a></th>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=8&hoststatustypes=15'>Unknown</a></th>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=16&hoststatustypes=15'>Critical</a></th>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=1&hoststatustypes=15'>Pending</a></th>
+</tr>
+<tr>
+<td class='serviceTotalsOK'>7</td>
+<td class='serviceTotalsWARNING'>1</td>
+<td class='serviceTotals'>0</td>
+<td class='serviceTotals'>0</td>
+<td class='serviceTotals'>0</td>
+</tr>
+</table>
+</td></tr><tr><td align='center'>
+<table class='serviceTotals'>
+<tr>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&servicestatustypes=28&hoststatustypes=15'><em>All Problems</em></a></th>
+<th class='serviceTotals'><a class='serviceTotals' href='status.cgi?hostgroup=all&style=detail&hoststatustypes=15'><em>All Types</em></a></th>
+</tr><tr>
+<td class='serviceTotalsPROBLEMS'>1</td>
+<td class='serviceTotals'>8</td>
+</tr>
+</table>
+</td></tr>
+</table>
+</div>
+</td>
+<td align=right valign=bottom>
+</td>
+</tr>
+</table>
+<table class='pageTitle' border='0' width='100%'>
+<tr>
+<td valign=top align=left width=33%>
+</td><td valign=top align=center width=33%>
+<div align='center' class='statusTitle'>Service Status Details For All Host Groups</div>
+<br></td>
+<td valign=top align=right width=33%></td>
+</tr>
+</table>
+<div id='pagelimit'>
+<div id='result_limit'>
+<label for='limit'>Limit Results: </label>
+<select onchange='set_limit("status.cgi?hostgroup=all&style=detail")' name='limit' id='limit'>
+<option  value='50'>50</option>
+<option  value='100'>100</option>
+<option  value='250'>250</option>
+<option  value='1000'>1000</option>
+<option selected='selected' value='0'>All</option>
+</select></div>
+<div id='top_page_numbers'></div>
+</div>
+<table border=0 width=100% class='status'>
+<tr>
+<th class='status'>Host&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=1'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by host name (ascending)' TITLE='Sort by host name (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=1'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by host name (descending)' TITLE='Sort by host name (descending)'></a></th><th class='status'>Service&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=2'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by service name (ascending)' TITLE='Sort by service name (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=2'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by service name (descending)' TITLE='Sort by service name (descending)'></a></th><th class='status'>Status&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=3'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by service status (ascending)' TITLE='Sort by service status (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=3'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by service status (descending)' TITLE='Sort by service status (descending)'></a></th><th class='status'>Last Check&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=4'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by last check time (ascending)' TITLE='Sort by last check time (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=4'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by last check time (descending)' TITLE='Sort by last check time (descending)'></a></th><th class='status'>Duration&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=6'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by state duration (ascending)' TITLE='Sort by state duration (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=6'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by state duration time (descending)' TITLE='Sort by state duration time (descending)'></a></th><th class='status'>Attempt&nbsp;<a href='status.cgi?hostgroup=all&style=detail&sorttype=1&sortoption=5'><IMG SRC='/nagios/images/up.gif' border=0 ALT='Sort by current attempt (ascending)' TITLE='Sort by current attempt (ascending)'></a><a href='status.cgi?hostgroup=all&style=detail&sorttype=2&sortoption=5'><IMG SRC='/nagios/images/down.gif' border=0 ALT='Sort by current attempt (descending)' TITLE='Sort by current attempt (descending)'></a></th><th class='status'>Status Information</th>
+</tr>
+<tr>
+<td class='statusEven'><table border=0 width='100%' cellpadding=0 cellspacing=0>
+<tr>
+<td align='left'>
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+<td align=left valign=center class='statusEven'><a href='extinfo.cgi?type=1&host=localhost' title='127.0.0.1'>localhost</a></td>
+</tr>
+</table>
+</td>
+<td align=right valign=center>
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+<td class='statusEven'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusEven'><a href='extinfo.cgi?type=2&host=localhost&service=Current+Load'>Current Load</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusEven'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusEven' nowrap>06-15-2014 18:29:05</td>
+<td class='statusEven' nowrap> 0d  0h  4m 40s</td>
+<td class='statusEven'>1/4</td>
+<td class='statusEven' valign='center'>OK - load average: 0.03, 0.02, 0.05&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusOdd'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusOdd'><a href='extinfo.cgi?type=2&host=localhost&service=Current+Users'>Current Users</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusOdd'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusOdd' nowrap>06-15-2014 18:29:43</td>
+<td class='statusOdd' nowrap> 0d  0h  4m  2s</td>
+<td class='statusOdd'>1/4</td>
+<td class='statusOdd' valign='center'>USERS OK - 1 users currently logged in&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusBGWARNING'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusBGWARNING'><a href='extinfo.cgi?type=2&host=localhost&service=HTTP'>HTTP</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusBGWARNING'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td ALIGN=center valign=center><a href='extinfo.cgi?type=2&host=localhost&service=HTTP'><IMG SRC='/nagios/images/ndisabled.gif' border=0 WIDTH=20 HEIGHT=20 ALT='Notifications for this service have been disabled' TITLE='Notifications for this service have been disabled'></a></td></tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusWARNING'>WARNING</td>
+<td class='statusBGWARNING' nowrap>06-15-2014 18:33:20</td>
+<td class='statusBGWARNING' nowrap> 0d  0h  2m 25s</td>
+<td class='statusBGWARNING'>4/4</td>
+<td class='statusBGWARNING' valign='center'>HTTP WARNING: HTTP/1.1 403 Forbidden - 1283 bytes in 0.001 second response time&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusOdd'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusOdd'><a href='extinfo.cgi?type=2&host=localhost&service=PING'>PING</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusOdd'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusOdd' nowrap>06-15-2014 18:30:58</td>
+<td class='statusOdd' nowrap> 0d  0h  2m 47s</td>
+<td class='statusOdd'>1/4</td>
+<td class='statusOdd' valign='center'>PING OK - Packet loss = 0%, RTA = 0.04 ms&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusEven'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusEven'><a href='extinfo.cgi?type=2&host=localhost&service=Root+Partition'>Root Partition</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusEven'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusEven' nowrap>06-15-2014 18:31:35</td>
+<td class='statusEven' nowrap> 0d  0h  2m 10s</td>
+<td class='statusEven'>1/4</td>
+<td class='statusEven' valign='center'>DISK OK - free space: / 12209 MB (90% inode=95%):&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusOdd'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusOdd'><a href='extinfo.cgi?type=2&host=localhost&service=SSH'>SSH</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusOdd'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td ALIGN=center valign=center><a href='extinfo.cgi?type=2&host=localhost&service=SSH'><IMG SRC='/nagios/images/ndisabled.gif' border=0 WIDTH=20 HEIGHT=20 ALT='Notifications for this service have been disabled' TITLE='Notifications for this service have been disabled'></a></td></tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusOdd' nowrap>06-15-2014 18:32:13</td>
+<td class='statusOdd' nowrap> 0d  0h  1m 32s</td>
+<td class='statusOdd'>1/4</td>
+<td class='statusOdd' valign='center'>SSH OK - OpenSSH_6.2 (protocol 2.0)&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusEven'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusEven'><a href='extinfo.cgi?type=2&host=localhost&service=Swap+Usage'>Swap Usage</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusEven'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusEven' nowrap>06-15-2014 18:32:50</td>
+<td class='statusEven' nowrap> 0d  0h  0m 55s</td>
+<td class='statusEven'>1/4</td>
+<td class='statusEven' valign='center'>SWAP OK - 100% free (735 MB out of 735 MB)&nbsp;</td>
+</tr>
+<tr>
+<td></td>
+<td class='statusOdd'><table border=0 WIDTH='100%' cellspacing=0 cellpadding=0><tr><td align='left'><table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td align='left' valign=center class='statusOdd'><a href='extinfo.cgi?type=2&host=localhost&service=Total+Processes'>Total Processes</a></td></tr>
+</table>
+</td>
+<td ALIGN=RIGHT class='statusOdd'>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+</tr>
+</table>
+</td>
+</tr></table></td>
+<td class='statusOK'>OK</td>
+<td class='statusOdd' nowrap>06-15-2014 18:33:28</td>
+<td class='statusOdd' nowrap> 0d  0h  0m 17s</td>
+<td class='statusOdd'>1/4</td>
+<td class='statusOdd' valign='center'>PROCS OK: 45 processes with STATE = RSZDT&nbsp;</td>
+</tr>
+</table>
+<br /><div class='itemTotalsTitle'>Results 1 - 8 of 8 Matching Services</div>
+</div>

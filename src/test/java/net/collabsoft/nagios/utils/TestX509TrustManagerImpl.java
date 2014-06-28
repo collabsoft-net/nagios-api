@@ -1,25 +1,35 @@
-package net.collabsoft.nagios.objects;
+package net.collabsoft.nagios.utils;
 
-import java.util.LinkedHashMap;
+import org.jmock.MockObjectTestCase;
+import org.junit.Test;
 
-public interface StatusObject {
+public class TestX509TrustManagerImpl extends MockObjectTestCase {
 
-    public enum Type { HOST, SERVICE, INFO, PROGRAM, CONTACT, COMMENT}
-    
     // ----------------------------------------------------------------------------------------------- Constructor
+
+    @Override
+    public void setUp() {
+        
+    }
+    
+    @Override
+    public void tearDown() {
+        
+    }
+
+    @Test
+    public void testProperties() {
+        X509TrustManagerImpl trustManager = new X509TrustManagerImpl();
+        trustManager.checkClientTrusted(null, null);
+        trustManager.checkServerTrusted(null, null);
+        assertNull(trustManager.getAcceptedIssuers());
+    }
     
     // ----------------------------------------------------------------------------------------------- Getters & Setters
 
-    public String getId();
-    public void setId(String id);
-    public Type getType();
-    public void setType(Type type);
-    public String getProperty(String name);
-    public LinkedHashMap<String, String> getProperties();
-    public void setProperty(String key, String value);
-    public void setProperties(LinkedHashMap<String, String> properties);
 
     // ----------------------------------------------------------------------------------------------- Public methods
+
 
     // ----------------------------------------------------------------------------------------------- Private methods
 

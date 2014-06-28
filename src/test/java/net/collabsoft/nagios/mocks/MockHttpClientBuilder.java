@@ -1,25 +1,29 @@
-package net.collabsoft.nagios.objects;
+package net.collabsoft.nagios.mocks;
 
-import java.util.LinkedHashMap;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-public interface StatusObject {
+public class MockHttpClientBuilder extends HttpClientBuilder {
 
-    public enum Type { HOST, SERVICE, INFO, PROGRAM, CONTACT, COMMENT}
-    
     // ----------------------------------------------------------------------------------------------- Constructor
-    
+
+    private final HttpClient client;
+
+    public MockHttpClientBuilder(HttpClient client) {
+        this.client = client;
+    }
+
+    @Override
+    public CloseableHttpClient build() {
+        return (CloseableHttpClient)client;
+    }
+
     // ----------------------------------------------------------------------------------------------- Getters & Setters
 
-    public String getId();
-    public void setId(String id);
-    public Type getType();
-    public void setType(Type type);
-    public String getProperty(String name);
-    public LinkedHashMap<String, String> getProperties();
-    public void setProperty(String key, String value);
-    public void setProperties(LinkedHashMap<String, String> properties);
 
     // ----------------------------------------------------------------------------------------------- Public methods
+
 
     // ----------------------------------------------------------------------------------------------- Private methods
 

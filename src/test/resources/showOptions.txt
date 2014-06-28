@@ -1,0 +1,1 @@
+usage: nagios-api [file|http] [options]
