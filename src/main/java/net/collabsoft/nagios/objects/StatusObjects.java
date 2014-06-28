@@ -5,7 +5,9 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.collabsoft.nagios.objects.StatusObject.Type;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -14,14 +16,14 @@ public class StatusObjects {
 
     @Expose private StatusObject info;
     @Expose private StatusObject programstatus;
-    @Expose private HashMap<String, StatusObject> hosts;
-    @Expose private HashMap<String, StatusObject> services;
+    @Expose private LinkedHashMap<String, StatusObject> hosts;
+    @Expose private LinkedHashMap<String, StatusObject> services;
     
     // ----------------------------------------------------------------------------------------------- Constructor
 
     public StatusObjects() {
-        this.hosts = Maps.newHashMap();
-        this.services = Maps.newHashMap();
+        this.hosts = Maps.newLinkedHashMap();
+        this.services = Maps.newLinkedHashMap();
     }
 
     // ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -42,6 +44,14 @@ public class StatusObjects {
             item.setProperty("host_name", host.getProperty("host_name"));
             result.add(item);
         }
+        
+        Collections.sort(result, new Comparator<StatusObject>() {
+            @Override
+            public int compare(StatusObject t, StatusObject t1) {
+                return t.getProperty("host_name").compareToIgnoreCase(t1.getProperty("host_name"));
+            }
+        });
+        
         return result;
     }
     
@@ -66,6 +76,14 @@ public class StatusObjects {
             item.setProperty("service_description", service.getProperty("service_description"));
             result.add(item);
         }
+        
+        Collections.sort(result, new Comparator<StatusObject>() {
+            @Override
+            public int compare(StatusObject t, StatusObject t1) {
+                return t.getProperty("service_description").compareToIgnoreCase(t1.getProperty("service_description"));
+            }
+        });
+        
         return result;
     }
 
@@ -82,6 +100,14 @@ public class StatusObjects {
                     result.add(statusObj);
                 }
             }
+            
+            Collections.sort(result, new Comparator<StatusObject>() {
+                @Override
+                public int compare(StatusObject t, StatusObject t1) {
+                    return t.getProperty("service_description").compareToIgnoreCase(t1.getProperty("service_description"));
+                }
+            });
+            
             return result;
         }
         return null;
@@ -103,8 +129,8 @@ public class StatusObjects {
     public void clear() {
         this.info = null;
         this.programstatus = null;
-        this.hosts = Maps.newHashMap();
-        this.services = Maps.newHashMap();
+        this.hosts = Maps.newLinkedHashMap();
+        this.services = Maps.newLinkedHashMap();
     }
     
     public void add(StatusObject statusObj) throws UnsupportedOperationException {

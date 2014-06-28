@@ -1,6 +1,6 @@
 package net.collabsoft.nagios.objects;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public interface StatusObject {
 
@@ -15,9 +15,9 @@ public interface StatusObject {
     public Type getType();
     public void setType(Type type);
     public String getProperty(String name);
-    public HashMap<String, String> getProperties();
+    public LinkedHashMap<String, String> getProperties();
     public void setProperty(String key, String value);
-    public void setProperties(HashMap<String, String> properties);
+    public void setProperties(LinkedHashMap<String, String> properties);
 
     // ----------------------------------------------------------------------------------------------- Public methods
 

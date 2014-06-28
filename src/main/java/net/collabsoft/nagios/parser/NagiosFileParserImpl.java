@@ -1,8 +1,11 @@
 package net.collabsoft.nagios.parser;
 
+import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import net.collabsoft.nagios.AppConfig;
 import net.collabsoft.nagios.AppConfig.ParserType;
 import net.collabsoft.nagios.cache.CacheLoaderForKey;
@@ -101,8 +104,8 @@ public class NagiosFileParserImpl extends AbstractParserImpl {
 
     // ----------------------------------------------------------------------------------------------- Private Getters & Setters
 
-    private HashMap<String, String> getProperties(String content) {
-        HashMap<String, String> properties = new HashMap<String, String>();
+    private LinkedHashMap<String, String> getProperties(String content) {
+        LinkedHashMap<String, String> properties = Maps.newLinkedHashMap();
         String[] lines = content.split(System.lineSeparator());
         for(String line : lines) {
             line = line.trim();
@@ -113,6 +116,7 @@ public class NagiosFileParserImpl extends AbstractParserImpl {
                 properties.put(key.toLowerCase(), value);
             }
         }
+        
         return properties;
     }
     
