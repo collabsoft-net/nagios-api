@@ -10,10 +10,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import static junit.framework.TestCase.assertNotNull;
 import net.collabsoft.nagios.AppConfig;
+import net.collabsoft.nagios.mocks.MockHttpClientBuilder;
 import net.collabsoft.nagios.objects.StatusObjects;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -263,7 +263,7 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
                 assertNotNull(status.getHost("localhost"));
                 break;
             case SERVICEDETAILS:
-                assertEquals(8, status.getServicesByHost("localhost").size());
+                assertEquals(7, status.getServicesByHost("localhost").size());
                 break;
         }
     }
@@ -316,19 +316,4 @@ public class TestNagiosHttpParser extends MockObjectTestCase {
             default: return "";
         }
     }
-    
-    private class MockHttpClientBuilder extends HttpClientBuilder {
-        
-        private final HttpClient client;
-        
-        public MockHttpClientBuilder(HttpClient client) {
-            this.client = client;
-        }
-        
-        @Override
-        public CloseableHttpClient build() {
-            return (CloseableHttpClient)client;
-        }
-    }
-
 }

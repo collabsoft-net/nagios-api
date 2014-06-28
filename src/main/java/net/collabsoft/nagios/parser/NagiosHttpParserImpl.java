@@ -180,24 +180,15 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
         try {
             Document document = getDocument(getUrl(CGI_DETAILS));
             List<Element> headers = document.select("table.status > tbody > tr:has(th) th");
-            List<Element> rows = document.select("table.status > tbody > tr").not(":has(th)");
+            List<Element> rows = document.select("table.status > tbody > tr").not(":has(th)").not(":has(td[colspan=6])");
 
             String hostname = null;
             for(Element row : rows) {
                 StatusObject detailObj = getDetailObject(row, headers, hostname);
-                hostname = detailObj.getProperty("host_name");
-                
-                if(detailObj.getType().equals(StatusObject.Type.HOST)) {
-                    StatusObject serviceObj = new StatusObjectImpl(StatusObject.Type.SERVICE);
-                    serviceObj.setProperties(detailObj.getProperties());
-                    serviceObj.setProperty("service_description", detailObj.getProperty("service"));
-                    result.add(serviceObj);
-                    
-                    detailObj.getProperties().remove("service");
-                    detailObj.getProperties().remove("service_description");
+                if(detailObj != null) {
+                    hostname = detailObj.getProperty("host_name");
+                    result.add(detailObj);
                 }
-                
-                result.add(detailObj);
             }
         } catch(IllegalArgumentException ex) {
             log.warn(ex);
@@ -223,12 +214,12 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             String value = element.select(String.format("td:eq(%s)", i)).text();
             statusObj.setProperty(getSanitizedKey(key), Normalizer.normalize(value, Normalizer.Form.NFKC));
         }
+
         return statusObj;
     }
     
     private String getSanitizedKey(String key) {
         key = key.replace(" ", "_");
-        key = key.replace(System.lineSeparator(), "");
         key = Normalizer.normalize(key, Normalizer.Form.NFKC);
         key = key.toLowerCase().trim();
         return key;
@@ -265,7 +256,7 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
         try {
             CredentialsProvider credentials = new BasicCredentialsProvider();
             credentials.setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(username, password));
-            
+
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(20 * 1000)
                                                                  .setConnectionRequestTimeout(30 * 1000)
                                                                  .build();
