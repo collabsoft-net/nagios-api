@@ -2,6 +2,7 @@ package net.collabsoft.nagios;
 
 import com.google.gson.annotations.Expose;
 import net.collabsoft.nagios.parser.NagiosFileParserImpl;
+import net.collabsoft.nagios.parser.NagiosHttpParserImpl;
 import net.collabsoft.nagios.parser.NagiosParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -178,6 +179,8 @@ public enum AppConfig {
                 
             case HTTP:
                 if(!cmd.hasOption("u") || cmd.getOptionValue("u").isEmpty()) throw new ParseException("'-u','--url' is required.");
+                NagiosParser nagiosHttpParser = new NagiosHttpParserImpl(url, username, password, insecure);
+                if(!nagiosHttpParser.isValid()) { throw new ParseException("Could not parse Nagios status information"); }
                 break;
         }
     }
