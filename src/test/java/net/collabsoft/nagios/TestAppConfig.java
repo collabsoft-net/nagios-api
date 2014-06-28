@@ -5,17 +5,31 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
+import javax.net.ssl.SSLContext;
 import jersey.repackaged.com.google.common.collect.Lists;
 import net.collabsoft.nagios.AppConfig.ParserType;
+import net.collabsoft.nagios.mocks.MockHttpClientBuilder;
+import net.collabsoft.nagios.parser.TestNagiosHttpParser;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.jmock.MockObjectTestCase;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest( HttpClientBuilder.class )
 public class TestAppConfig extends MockObjectTestCase {
 
     private static final Logger log = Logger.getLogger(TestAppConfig.class);
@@ -77,10 +91,22 @@ public class TestAppConfig extends MockObjectTestCase {
     }
 
     @Test
-    public void testHttpFromArgs() {
+    public void testHttpFromArgs() throws IOException {
         List<String> arguments = Lists.newArrayList("http", "-u", TEST_URL, "-username", TEST_USERNAME, "-password", TEST_PASSWORD, "-h", TEST_HOST, "-p", String.valueOf(TEST_PORT));
         if(TEST_INSECURE) { arguments.add("-insecure"); }
         String[] args = arguments.toArray(new String[arguments.size()]);
+        
+        FileUtils.deleteQuietly(new File(PATH));
+        String status = IOUtils.toString(this.getClass().getResourceAsStream("/data/nagios-3.0-info.html"),"UTF-8");
+        FileUtils.write(new File(PATH), status);
+        String contents = FileUtils.readFileToString(new File(PATH));
+        
+        CloseableHttpClient mockHttpClient = PowerMockito.mock(CloseableHttpClient.class);
+        PowerMockito.when(mockHttpClient.execute((HttpGet) any(), (ResponseHandler) any())).thenReturn(contents);
+        
+        HttpClientBuilder mockBuilder = new MockHttpClientBuilder(mockHttpClient);
+        PowerMockito.mockStatic(HttpClientBuilder.class);
+        PowerMockito.when(HttpClientBuilder.create()).thenReturn((HttpClientBuilder)mockBuilder);
         
         AppConfig config = null;
         try {
