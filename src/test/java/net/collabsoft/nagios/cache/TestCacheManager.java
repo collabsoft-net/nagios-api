@@ -66,18 +66,18 @@ public class TestCacheManager extends MockObjectTestCase {
     public void testCacheEntries() {
         CacheManagerImpl cm = (CacheManagerImpl) CacheManagerImpl.getInstance();
         
-        TestCacheEntry cacheEntry = new TestCacheEntry();
+        MockCacheEntry cacheEntry = new MockCacheEntry();
         cacheEntry.setSomeValue(TEST_CACHE_ENTRY_VALUE);
-        cm.setEntry(TestCacheEntry.CACHEKEY, cacheEntry);
-        assertNotNull(cm.getEntry(TestCacheEntry.CACHEKEY));
+        cm.setEntry(MockCacheEntry.CACHEKEY, cacheEntry);
+        assertNotNull(cm.getEntry(MockCacheEntry.CACHEKEY));
 
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.CACHEKEY);
         assertEquals(TEST_CACHE_ENTRY_VALUE, cacheEntry.getSomeValue());
         cm.clear();
 
         AppConfig.getInstance().setStateless(true);
         try {
-            cm.setEntry(TestCacheEntry.CACHEKEY, cacheEntry);
+            cm.setEntry(MockCacheEntry.CACHEKEY, cacheEntry);
             fail("This should have thrown an UnsupportedOperationException");
         } catch(UnsupportedOperationException ex) {
             // THIS IS SUPPOSED TO HAPPEN!
@@ -85,19 +85,19 @@ public class TestCacheManager extends MockObjectTestCase {
         AppConfig.getInstance().setStateless(false);
         cm.clear();
         
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.INVALID_CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.INVALID_CACHEKEY);
         assertNull(cacheEntry);
         cm.clear();
         
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.CACHEKEY);
         assertNotNull(cacheEntry);
         assertEquals(DEFAULT_CACHE_ENTRY_VALUE, cacheEntry.getSomeValue());
         
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.ALT_CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.ALT_CACHEKEY);
         assertNotNull(cacheEntry);
         assertEquals(DEFAULT_CACHE_ENTRY_VALUE, cacheEntry.getSomeValue());
         
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.ERROR_CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.ERROR_CACHEKEY);
         assertNull(cacheEntry);
     }
     
@@ -107,11 +107,11 @@ public class TestCacheManager extends MockObjectTestCase {
         
         AppConfig config = AppConfig.getInstance();
         config.setParserType(AppConfig.ParserType.FILE);
-        TestCacheEntry cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
+        MockCacheEntry cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.CACHEKEY);
         assertNotNull(cacheEntry);
 
         cm.refresh();
-        cacheEntry = (TestCacheEntry)cm.getEntry(TestCacheEntry.CACHEKEY);
+        cacheEntry = (MockCacheEntry)cm.getEntry(MockCacheEntry.CACHEKEY);
         assertNotNull(cacheEntry);
         assertEquals(DEFAULT_CACHE_ENTRY_VALUE, cacheEntry.getSomeValue());
     }

@@ -3,7 +3,7 @@ package net.collabsoft.nagios.cache;
 import net.collabsoft.nagios.AppConfig;
 
 
-public class TestCacheEntry {
+public class MockCacheEntry {
 
     public static final String CACHEKEY = "TestCacheEntry";
     public static final String ALT_CACHEKEY = "AltTestCacheEntry";
@@ -14,7 +14,7 @@ public class TestCacheEntry {
     
     // ----------------------------------------------------------------------------------------------- Constructor
 
-    public TestCacheEntry() {
+    public MockCacheEntry() {
         
     }
 
@@ -31,19 +31,19 @@ public class TestCacheEntry {
 
     @CacheLoaderForKey(CACHEKEY)
     @CacheLoaderForParserType(AppConfig.ParserType.FILE)
-    public static TestCacheEntry getTestCacheEntry() {
-        return new TestCacheEntry();
+    public static MockCacheEntry getTestCacheEntry() {
+        return new MockCacheEntry();
     }
     
     @CacheLoaderForKey(ALT_CACHEKEY)
     @CacheLoaderForParserType(AppConfig.ParserType.FILE)
-    public TestCacheEntry getAltTestCacheEntry() {
+    public MockCacheEntry getAltTestCacheEntry() {
         return this;
     }
     
     @CacheLoaderForKey(ERROR_CACHEKEY)
     @CacheLoaderForParserType(AppConfig.ParserType.FILE)
-    public TestCacheEntry getErrorTestCacheEntry() {
+    public MockCacheEntry getErrorTestCacheEntry() {
         throw new UnsupportedOperationException();
     }
 
