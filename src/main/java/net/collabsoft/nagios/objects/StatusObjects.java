@@ -42,6 +42,7 @@ public class StatusObjects {
             StatusObject item = new StatusObjectImpl(host.getType());
             item.setId(host.getId());
             item.setProperty("host_name", host.getProperty("host_name"));
+            item.setProperty("status", host.getProperty("status"));
             result.add(item);
         }
         
@@ -64,6 +65,7 @@ public class StatusObjects {
                 }
             }
         }
+        
         return result;
     }
     
@@ -74,6 +76,7 @@ public class StatusObjects {
             item.setId(service.getId());
             item.setProperty("host_name", service.getProperty("host_name"));
             item.setProperty("service_description", service.getProperty("service_description"));
+            item.setProperty("status", service.getProperty("status"));
             result.add(item);
         }
         
