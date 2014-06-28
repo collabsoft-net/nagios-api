@@ -24,6 +24,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -265,15 +266,21 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
             CredentialsProvider credentials = new BasicCredentialsProvider();
             credentials.setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(username, password));
             
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(20 * 1000)
+                                                                 .setConnectionRequestTimeout(30 * 1000)
+                                                                 .build();
+            
             if(trustSSLCertificate) {
                 SSLContext sslContext = SSLContext.getInstance("SSL");
                 sslContext.init(null, new TrustManager[] { new X509TrustManagerImpl() }, new SecureRandom());
                 return HttpClientBuilder.create()
+                                        .setDefaultRequestConfig(requestConfig)
                                         .setDefaultCredentialsProvider(credentials)
                                         .setSslcontext(sslContext)
                                         .build();
             } else {
                 return HttpClientBuilder.create()
+                                        .setDefaultRequestConfig(requestConfig)
                                         .setDefaultCredentialsProvider(credentials)
                                         .build();
             }
