@@ -59,6 +59,38 @@
         <url>https://collabsoft.atlassian.net/builds/browse/CS-NA</url>
     </ciManagement>
 
+    <repositories>
+        <repository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://api.bitbucket.org/1.0/repositories/collabsoft/mvn-repository/raw/releases</url>
+        </repository>
+        <repository>
+            <id>CollabSoft Maven Repository - Snapshots</id>
+            <name>CollabSoft Maven Repository</name>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://api.bitbucket.org/1.0/repositories/collabsoft/mvn-repository/raw/snapshots</url>
+        </repository>
+        <repository>
+            <id>synergian-repo</id>
+            <url>https://raw.github.com/synergian/wagon-git/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>CollabSoft Maven Repository</id>
