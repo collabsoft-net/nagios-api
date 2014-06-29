@@ -4,7 +4,7 @@
 
     <groupId>net.collabsoft</groupId>
     <artifactId>nagios-api</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Nagios API</name>
@@ -58,6 +58,26 @@
         <system>Atlassian Bamboo (OnDemand)</system>
         <url>https://collabsoft.atlassian.net/builds/browse/CS-NA</url>
     </ciManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <url>git:releases://https://bitbucket.org/collabsoft/mvn-repository.git</url>
+        </repository>
+        <snapshotRepository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <url>git:snapshots://https://bitbucket.org/collabsoft/mvn-repository.git</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>synergian-repo</id>
+            <url>https://raw.github.com/synergian/wagon-git/releases</url>
+        </pluginRepository>
+    </pluginRepositories>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -278,6 +298,14 @@
                 </executions>
             </plugin>            
         </plugins>
+        
+        <extensions>
+            <extension>
+                <groupId>ar.com.synergian</groupId>
+                <artifactId>wagon-git</artifactId>
+                <version>0.2.3</version>
+            </extension>
+        </extensions>
     </build>
     
     <profiles>
