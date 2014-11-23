@@ -4,10 +4,10 @@
 
     <groupId>net.collabsoft</groupId>
     <artifactId>nagios-api</artifactId>
-    <version>0.9.1</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Nagios API</name>
+    <name>CollabSoft Nagios API</name>
     <description>
         The Nagios API project is designed to create a stand-alone REST API server
         providing information about Nagios-like systems. 
@@ -58,6 +58,58 @@
         <system>Atlassian Bamboo (OnDemand)</system>
         <url>https://collabsoft.atlassian.net/builds/browse/CS-NA</url>
     </ciManagement>
+
+    <repositories>
+        <repository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://api.bitbucket.org/1.0/repositories/collabsoft/mvn-repository/raw/releases</url>
+        </repository>
+        <repository>
+            <id>CollabSoft Maven Repository - Snapshots</id>
+            <name>CollabSoft Maven Repository</name>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://api.bitbucket.org/1.0/repositories/collabsoft/mvn-repository/raw/snapshots</url>
+        </repository>
+        <repository>
+            <id>synergian-repo</id>
+            <url>https://raw.github.com/synergian/wagon-git/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <url>git:releases://https://bitbucket.org/collabsoft/mvn-repository.git</url>
+        </repository>
+        <snapshotRepository>
+            <id>CollabSoft Maven Repository</id>
+            <name>CollabSoft Maven Repository</name>
+            <url>git:snapshots://https://bitbucket.org/collabsoft/mvn-repository.git</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>synergian-repo</id>
+            <url>https://raw.github.com/synergian/wagon-git/releases</url>
+        </pluginRepository>
+    </pluginRepositories>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -278,6 +330,14 @@
                 </executions>
             </plugin>            
         </plugins>
+        
+        <extensions>
+            <extension>
+                <groupId>ar.com.synergian</groupId>
+                <artifactId>wagon-git</artifactId>
+                <version>0.2.3</version>
+            </extension>
+        </extensions>
     </build>
     
     <profiles>
