@@ -26,6 +26,7 @@ public enum AppConfig {
     @Expose private String username;
     @Expose private String password;
     @Expose private boolean insecure;
+    @Expose private boolean daemon;
     
     // ----------------------------------------------------------------------------------------------- Constructor
     
@@ -116,6 +117,14 @@ public enum AppConfig {
     public void setInsecure(boolean insecure) {
         this.insecure = insecure;
     }
+
+    public boolean isDaemon() {
+        return daemon;
+    }
+
+    public void setDaemon(boolean daemon) {
+        this.daemon = daemon;
+    }
     
     // ----------------------------------------------------------------------------------------------- Public methods
 
@@ -129,7 +138,7 @@ public enum AppConfig {
                 formatter.printHelp( "nagios-api [file|http] [options]" + System.lineSeparator(), config.getOptions() );
                 break;
             case FILE:
-                formatter.printHelp( "nagios-api file -i \"path to status.dat\" [options]" + System.lineSeparator(), config.getOptions() );
+                formatter.printHelp( "nagios-api file -f \"path to status.dat\" [options]" + System.lineSeparator(), config.getOptions() );
                 break;
             case HTTP:
                 formatter.printHelp( "nagios-api http -u \"Url to Nagios cgi-bin directory ('http://example.org/nagios/cgi-bin/')\" [options]" + System.lineSeparator(), config.getOptions() );
@@ -162,6 +171,7 @@ public enum AppConfig {
         this.hostname = cmd.hasOption("h") ? cmd.getOptionValue("h") : "localhost";
         this.port = cmd.hasOption("p") ? Integer.parseInt(cmd.getOptionValue("p")) : AppServer.DEFAULT_PORT;
         this.stateless = cmd.hasOption("s");
+        this.daemon = cmd.hasOption("d");
         
         this.file = cmd.getOptionValue("f");
         this.url = cmd.getOptionValue("u");
@@ -194,6 +204,7 @@ public enum AppConfig {
             options.addOption("h", "host", true, "Binds the Nagios API server to the given hostname or IP address");
             options.addOption("p", "port", true, "Binds the Nagios API server to the given TCP port");
             options.addOption("s", "stateless", false, "Disables caching of Nagios status information. Caution: can cause performance issues!");
+            options.addOption("d", "daemon", false, "Run the Nagios API server as a background process");
         }
         
         switch(parserType) {

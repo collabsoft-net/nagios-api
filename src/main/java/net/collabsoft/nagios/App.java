@@ -23,10 +23,14 @@ public class App
         AppServer appServer = new AppServer(config.getHostname(), config.getPort());
         appServer.start();
 
-        System.out.println("Press any key to stop the service...");
-        System.in.read();
-
-        appServer.stop();
+        if(config.isDaemon()) {
+           while(true) {}
+        } else {
+            System.out.println("Press any key to stop the service...");
+            System.in.read();
+            
+            appServer.stop();
+        }
     }
     
 }
