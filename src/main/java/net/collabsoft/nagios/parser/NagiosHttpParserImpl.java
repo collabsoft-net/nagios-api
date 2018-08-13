@@ -227,8 +227,8 @@ public class NagiosHttpParserImpl extends AbstractParserImpl {
     
     private Document getDocument(String url) throws IllegalArgumentException {
         String source = getSource(url);
-        Document document = Jsoup.parse(source);
-        return document;
+        Document intermediate = Jsoup.parse(source);
+        return Jsoup.parse(intermediate.outerHtml());
     }
     
     private String getSource(String url) {
